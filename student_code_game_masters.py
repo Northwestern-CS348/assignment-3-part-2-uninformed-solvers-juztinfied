@@ -33,8 +33,49 @@ class TowerOfHanoiGame(GameMaster):
         Returns:
             A Tuple of Tuples that represent the game state
         """
-        ### student code goes here
-        pass
+        
+        # we first need to ask the KB of the parent class 
+
+        # enquire for peg1
+        ask1 = parse_input("fact: (on ?X peg1)")
+        print(' Asking if', ask1)
+        answers = self.kb.kb_ask(ask1)
+        print (answers[0])
+        p1 = list()
+        for answer in answers:
+            p1.append(int(answer[9]))
+
+        # enquire for peg2
+        ask1 = parse_input("fact: (on ?X peg2)")
+        print(' Asking if', ask1)
+        answers = self.kb.kb_ask(ask1)
+        p2 = list()
+        for answer in answers:
+            p2.append(int(answer[9]))
+
+        # enquire for peg3
+        ask1 = parse_input("fact: (on ?X peg3)")
+        print(' Asking if', ask1)
+        answers = self.kb.kb_ask(ask1)
+        p3 = list()
+        for answer in answers:
+            peg2.append(int(answer[9]))
+
+        # sort in ascending order
+        p1.sort()
+        p2.sort()
+        p3.sort()
+
+        # create the tuples from the lists
+        peg1 = tuple(p1)
+        print(peg1)
+        peg2 = tuple(p2)
+        print(peg2)
+        peg3 = tuple(p3)
+        print(peg3)
+
+        return (peg1, peg2, peg3)
+
 
     def makeMove(self, movable_statement):
         """
