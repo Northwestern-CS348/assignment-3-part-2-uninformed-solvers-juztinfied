@@ -18,8 +18,27 @@ class SolverDFS(UninformedSolver):
         Returns:
             True if the desired solution state is reached, False otherwise
         """
-        # student code here 
+        moverecord = list()
+        countrecord = [0]
 
+        initial = self.gm.getGameState()
+
+        solved = False 
+        while not solved:
+            moves = self.gm.getMovables() # this is a list of legal moves
+            if not moves: # if there are no more available moves, need to backtrack
+                self.gm.reverseMove(moverecord.pop())
+                countrecord[-1] = countrecord[-1] + 1
+                continue 
+            else: # if there is at least one move to do
+                self.gm.makeMove(moves[countrecord[-1]]) # do the first move offered 
+                moverecord.append(moves[countrecord[-1]]) # record that move 
+                next = self.gm.getGameState() # get the new state
+                print(next)
+                if next == self.victoryCondition: # check if victory is achieved 
+                    solved = True 
+                else: # if still no victory 
+                    countrecord.append(0) # prepare this for next move 
 
 class SolverBFS(UninformedSolver):
     def __init__(self, gameMaster, victoryCondition):

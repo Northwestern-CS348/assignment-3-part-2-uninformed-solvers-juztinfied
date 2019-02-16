@@ -109,7 +109,6 @@ class TowerOfHanoiGame(GameMaster):
         newpeg = terms[2].__str__()
 
         # find out what disk is below target disk 
-        print ('asking what is the disk below target disk')
         ask = parse_input("fact: (ontop %s ?X)" %disktomove)
         answer = self.kb.kb_ask(ask)
 
@@ -118,21 +117,16 @@ class TowerOfHanoiGame(GameMaster):
         
         diskbelow = str(answer[0])
         diskbelow = diskbelow[-5:]
-        print (diskbelow)
 
         # find out what is currently at the top of new peg
-        print ('asking what is currently at the top of new peg')
         ask = parse_input("fact: (ontop ?X %s)" %newpeg)
         answer = self.kb.kb_ask(ask)
         topofnewpegdisk = ''
         if not answer:
             topofnewpegdisk = 'base1'
-            print (topofnewpegdisk)
         else:
             topofnewpegdisk = str(answer[0])
             topofnewpegdisk = topofnewpegdisk[-5:]
-            print ('top of new peg disk is:')
-            print (topofnewpegdisk)
 
         # first we need to retract fact that the disk is at old peg
         statement1 = Statement(['on', disktomove, oldpeg])
@@ -147,22 +141,22 @@ class TowerOfHanoiGame(GameMaster):
         statement4 = Statement(['ontop', disktomove, topofnewpegdisk])
         fact4 = Fact(statement4)
         # need to retract the fact that the new peg as a new top most disk
-        fact5 = 0
-        if topofnewpegdisk == 'base1':
-            pass
-            print ('no need for fact 5')
-        else:
-            print ('we need fact 5')
+        statement5 = ''
+        if topofnewpegdisk == 'base1': # if newpeg was empty 
+            statement5 = Statement(['empty', newpeg])
+        else: # if newpeg already has something 
             statement5 = Statement(['top', topofnewpegdisk])
-            fact5 = Fact(statement5)
-            print (fact5)
+        fact5 = Fact(statement5)
+        # need to assert that target disk is no longer on top of the disk below
+        statement6 = Statement(['ontop', disktomove, diskbelow])
+        fact6 = Fact(statement6)
 
         self.kb.kb_retract(fact1)
+        self.kb.kb_retract(fact6)
+        self.kb.kb_retract(fact5)
         self.kb.kb_assert(fact2)
         self.kb.kb_assert(fact3)
         self.kb.kb_assert(fact4)
-        if fact5:
-            self.kb.kb_retract(fact5)
 
     def reverseMove(self, movable_statement):
         """
