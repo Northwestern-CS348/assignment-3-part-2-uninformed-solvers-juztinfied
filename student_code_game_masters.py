@@ -111,7 +111,6 @@ class TowerOfHanoiGame(GameMaster):
         # find out what disk is below target disk 
         ask = parse_input("fact: (ontop %s ?X)" %disktomove)
         answer = self.kb.kb_ask(ask)
-
         if not answer:
             print ('no answer')
         
@@ -171,7 +170,7 @@ class TowerOfHanoiGame(GameMaster):
         self.kb.kb_assert(fact3)
         self.kb.kb_assert(fact4)
 
-        #print(self.kb)
+        print(self.kb)
 
     def reverseMove(self, movable_statement):
         """
@@ -217,8 +216,37 @@ class Puzzle8Game(GameMaster):
         Returns:
             A Tuple of Tuples that represent the game state
         """
-        ### Student code goes here
-        pass
+
+        # enquire for Y = pos1
+        ask1 = parse_input("fact: (YLOC ?tile pos1)")
+        answers = self.kb.kb_ask(ask1)
+        rows = [[0,0,0],[0,0,0],[0,0,0]]
+
+        for i in range(1,4):
+            p = str(i)
+            currentrow = rows[i-1]
+            ask1 = parse_input("fact: (YLOC ?tile pos%s)" %p)
+            answers = self.kb.kb_ask(ask1)
+            if not answers:
+                print('error') 
+
+            else:
+                for answer in answers:
+                    tile = str(answer)
+                    tile = tile[-5:]
+                    ask2 = parse_input("fact: (XLOC %s ?pos)" %tile) # find out its XPOS
+                    answer = self.kb.kb_ask(ask2)
+                    xpos = int((str(answer[0]))[-1])
+                    if tile == 'empty':
+                        currentrow[xpos-1] = -1
+                    else:
+                        currentrow[xpos-1] = int(tile[-1])
+
+        # create the tuples from the lists
+        row1 = tuple(rows[0])
+        row2 = tuple(rows[1])
+        row3 = tuple(rows[2])
+        return (row1, row2, row3)
 
     def makeMove(self, movable_statement):
         """
@@ -237,7 +265,40 @@ class Puzzle8Game(GameMaster):
             None
         """
         ### Student code goes here
-        pass
+        terms = movable_statement.terms
+        tile = terms[0].__str__()
+        oldx = terms[1].__str__()
+        oldy = terms[2].__str__()
+        newx = terms[3].__str__()
+        newy = terms[4].__str__()
+
+        statement1 = Statement(['XLOC', tile, newx])
+        fact1 = Fact(statement1)
+        statement2 = Statement(['YLOC', tile, newy])
+        fact2 = Fact(statement2)
+        statement3 = Statement(['XLOC', 'empty', oldx])
+        fact3 = Fact(statement3)
+        statement4 = Statement(['YLOC', 'empty', oldy])
+        fact4 = Fact(statement4)
+
+        statement5 = Statement(['XLOC', tile, oldx])
+        fact5 = Fact(statement5)
+        statement6 = Statement(['YLOC', tile, oldy])
+        fact6 = Fact(statement6)
+        statement7 = Statement(['XLOC', 'empty', newx])
+        fact7 = Fact(statement7)
+        statement8 = Statement(['YLOC', 'empty', newy])
+        fact8 = Fact(statement8)
+
+
+        self.kb.kb_retract(fact5)
+        self.kb.kb_retract(fact6)
+        self.kb.kb_retract(fact7)
+        self.kb.kb_retract(fact8)
+        self.kb.kb_assert(fact1)
+        self.kb.kb_assert(fact2)
+        self.kb.kb_assert(fact3)
+        self.kb.kb_assert(fact4)
 
     def reverseMove(self, movable_statement):
         """

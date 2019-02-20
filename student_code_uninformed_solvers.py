@@ -28,7 +28,6 @@ class SolverDFS(UninformedSolver):
         while True:
             # know what is the current node its on
             current = self.gm.getGameState()
-            print(current)
             # check for victory condition
             if current == self.victoryCondition:
                 solved = True
@@ -36,8 +35,6 @@ class SolverDFS(UninformedSolver):
 
             # get all possible child nodes 
             moves = self.gm.getMovables()
-            print('possible moves')
-            print(moves)
             if moves:  # if there are child nodes 
                 # have we visited this current node before? if no:
                 if current not in statemovesrecord:
@@ -91,8 +88,6 @@ class SolverBFS(UninformedSolver):
             True if the desired solution state is reached, False otherwise
         """
         pathtostate = dict()
-        moverecords = list()
-
         initial = self.gm.getGameState
         pathtostate[initial] = []
         solved = False
@@ -100,6 +95,8 @@ class SolverBFS(UninformedSolver):
         while True:
             # know what is the current node its on
             current = self.gm.getGameState()
+            # get path to current state
+            pathtocurrent = pathtostate[current]
             # check for victory condition
             if current == self.victoryCondition:
                 solved = True
@@ -108,27 +105,34 @@ class SolverBFS(UninformedSolver):
             # get all possible child nodes 
             moves = self.gm.getMovables()
             if moves:  # if there are child nodes 
-                moverecords.append(moves)
                 for move in moves: # for each child
                     self.gm.makeMove(move)
-                    childstate = self.gm.getGameState
-                    if childstate == self.victoryCondition:
+                    childstate = self.gm.getGameState 
+                    if childstate == self.victoryCondition: # if child is solution
                         solved = True
-                        break
-                    else:
-                        pathtocurrent = pathtostate[current]
-                        pathtochild = pathtocurrent.append(move)
-                        pathtostate[childstate] = pathtochild
-                        self.gm.reverseMove(move)
+                        break # end while loop 
+                    else: # if child is not solution
+                        pathtochild = pathtocurrent.append(move) # path to child is path to current + move
+                        pathtostate[childstate] = pathtochild # record path to child
+                        self.gm.reverseMove(move) # go back to the parent and explore another child 
 
-                # after exploring all children, expand one of the child
-                self.gm.makeMove(moverecords.pop(0))
-                continue # then repeat while loop
-            
-            else:
-                # if the node is a leaf node
+            else: # if current is a leaf node and is also not the solution
+                # go back to root
+                pathtoroot = pathtostate[current]
+                pathtostate.remove(current)
+                for i in range(len(pathtoroot)):
+                    self.gm.reverseMove(pathtoroot.pop())
 
-            if solved or not moverecords:
+            if pathtostate: # if there is still at least one node to expand
+                # go to that node 
+                pathtonewcurrent = pathtostate.pop(0)
+                for i in range(len(pathtonewcurrent)):
+                    self.gm.makeMove(pathtonewcurrent[i])
+
+                continue 
+
+            else: # if there are no more nodes to explore 
                 break 
+
 
         return solved
