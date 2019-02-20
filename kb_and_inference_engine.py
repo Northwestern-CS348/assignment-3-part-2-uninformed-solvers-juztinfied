@@ -110,6 +110,8 @@ class KnowledgeBase(object):
                             dependent.supported_by.remove([fact,rule])
                     if len(dependent.supported_by) == 0 and not dependent.asserted:
                         self.kb_remove(dependent)
+            # print('removing the following fact')
+            # print(fact_rule.__str__())
             self.facts.remove(fact_rule)
 
         elif isinstance(fact_rule, Rule) and fact_rule in self.rules:
@@ -129,6 +131,8 @@ class KnowledgeBase(object):
                             dependent.supported_by.remove([fact,rule])
                     if len(dependent.supported_by) == 0 and not dependent.asserted:
                         self.kb_remove(dependent)
+            # print('removing the following rule')
+            # print(fact_rule.__str__())
             self.rules.remove(fact_rule)
 
     def kb_assert(self, fact_rule):
