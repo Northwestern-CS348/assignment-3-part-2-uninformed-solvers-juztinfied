@@ -31,18 +31,19 @@ fact: (on disk1 peg1)
 fact: (on disk2 peg1)
 fact: (on disk3 peg1)
 
+fact: (ontop disk3 base1)
 fact: (ontop disk2 disk3)
 fact: (ontop disk1 disk2)
-fact: (ontop disk3 base1)
+
 
 fact: (empty peg2)
 fact: (empty peg3)
 
-fact: (top disk1)
+fact: (top disk1 peg1)
 
 fact: (larger disk2 disk1)
 fact: (larger disk3 disk2)
 
 rule: ((larger ?diskA ?diskB) (larger ?diskB ?diskC)) -> (larger ?diskA ?diskC)
-rule: ((top ?disk) (on ?disk ?initial) (empty ?target)) -> (movable ?disk ?initial ?target)
-rule: ((top ?diskA) (on ?disk ?initial) (top ?diskB) (on ?diskB ?target) (larger ?diskB ?diskA)) -> (movable ?diskA ?initial ?target)
+rule: ((empty ?target) (on ?disk ?initial) (top ?disk ?initial)) -> (movable ?disk ?initial ?target)
+rule: ((top ?diskB ?target) (on ?diskB ?target) (larger ?diskB ?diskA) (top ?diskA ?initial) (on ?disk ?initial)) -> (movable ?diskA ?initial ?target)

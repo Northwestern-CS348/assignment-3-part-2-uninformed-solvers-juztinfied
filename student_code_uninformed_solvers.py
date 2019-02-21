@@ -22,12 +22,14 @@ class SolverDFS(UninformedSolver):
         statemovesrecord = dict()
         moverecords = list()
         initial = self.gm.getGameState()
-        moverecords.append(initial)
+        statemovesrecord[initial] = -1
         solved = False
 
         while True:
+            print('look at the state move records: ' + statemovesrecord)
             # know what is the current node its on
             current = self.gm.getGameState()
+            print('current state:' + current)
             # check for victory condition
             if current == self.victoryCondition:
                 solved = True
@@ -35,15 +37,43 @@ class SolverDFS(UninformedSolver):
 
             # get all possible child nodes 
             moves = self.gm.getMovables()
+            print(moves)
             if moves:  # if there are child nodes 
-                # have we visited this current node before? if no:
+                # if we have not visited this current node before
                 if current not in statemovesrecord:
-                    statemovesrecord[current] = 0
-                    self.gm.makeMove(moves[statemovesrecord[current]]) # visit leftmost child node 
-                    #print('chosen move')
-                    #print(moves[statemovesrecord[current]])
-                    moverecords.append(moves[statemovesrecord[current]]) # record move
-                    continue # repeat loop 
+                    statemovesrecord[current] = 0 # we are going to try the first available child first
+                    for move in moves: # for each child
+                        if statemovesrecord[current] != moves.index(move):
+                            print('error')
+
+                        self.gm.makeMove(moves[statemovesrecord[current]]) # visit leftmost child node 
+                        next = self.gm.getGameState()
+                        print('trying move')
+                        print(moves[statemovesrecord[current]])
+                        moverecords.append(moves[statemovesrecord[current]]) # record move
+
+                        # if this child is a state we visited before, do not expand this child. try another child
+                        if next in statemovesrecord: 
+                            print('visited before!')
+                            self.gm.reverseMove(moverecords.pop()) # go back to current
+                            statemovesrecord[current] += 1
+                            if statemovesrecord[current] >= len(moves): # if we ran out of child nodes to go to
+                                # reverse last move. go back to parent node 
+                                self.gm.reverseMove(moverecords.pop())
+                                continue # repeat loop 
+                            else:
+                                self.gm.makeMove(moves[statemovesrecord[current]]) # visit an unvisited child node
+                                moverecords.append(moves[statemovesrecord[current]]) # record move 
+                                continue 
+                                #print('chosen move')
+                                #print(moves[statemovesrecord[current]])
+                        else: # if we have not visited this child before, set this child as next current node
+                            self.gm.makeMove(moves[statemovesrecord[current]]) # visit an unvisited child node
+                            moverecords.append(moves[statemovesrecord[current]]) # record move 
+                            continue 
+
+                    continue # repeat loop to expand next state
+
                 # if we ever reach this current node before, go to a child not visited before
                 else:
                     statemovesrecord[current] += 1
@@ -57,7 +87,7 @@ class SolverDFS(UninformedSolver):
                         #print('chosen move')
                         #print(moves[statemovesrecord[current]])
             
-            else:
+            else: # if there are no child nodes 
                 # reverse last move. go back to parent node 
                 self.gm.reverseMove(moverecords.pop())
 
@@ -68,8 +98,6 @@ class SolverDFS(UninformedSolver):
             
             
             
-            
-
 class SolverBFS(UninformedSolver):
     def __init__(self, gameMaster, victoryCondition):
         super().__init__(gameMaster, victoryCondition)

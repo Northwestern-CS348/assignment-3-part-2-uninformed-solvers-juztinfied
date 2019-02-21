@@ -108,6 +108,7 @@ class TowerOfHanoiGame(GameMaster):
         oldpeg = terms[1].__str__()
         newpeg = terms[2].__str__()
 
+
         # find out what disk is below target disk 
         ask = parse_input("fact: (ontop %s ?X)" %disktomove)
         answer = self.kb.kb_ask(ask)
@@ -138,39 +139,49 @@ class TowerOfHanoiGame(GameMaster):
         statement2 = Statement(['on', disktomove, newpeg])
         fact2 = Fact(statement2)
 
-        # next, assert that the disk below target disk is at the top of old peg
-        statement3 = ''
-        if diskbelow == 'base1': # if there is nothing on the old peg, declare it empty
-            statement3 = Statement(['empty', oldpeg])
-        if diskbelow != 'base1':
-            statement3 = Statement(['top', diskbelow])
-        
+        # third, assert that the target disk is on top of new peg 
+        statement3 = Statement(['top', disktomove, newpeg])
         fact3 = Fact(statement3)
-
-        # also assert what the target disk is on top of
-        statement4 = Statement(['ontop', disktomove, topofnewpegdisk])
+        
+        # fourth, assert that diskbelow is the top of the old peg. or if there are no diskbelow, then declare old peg empty
+        statement4 = ''
+        if diskbelow == 'base1':
+            statement4 = Statement(['empty', oldpeg])
+        else:
+            statement4 = Statement(['top', diskbelow, oldpeg])
         fact4 = Fact(statement4)
 
-        # need to retract the fact that the new peg as a new top most disk
-        statement5 = ''
-        if topofnewpegdisk == 'base1': # if newpeg was empty, we need to RETRACT this fact 
-            statement5 = Statement(['empty', newpeg])
-        else: # if newpeg already has something, that something is no longer at the top 
-            statement5 = Statement(['top', topofnewpegdisk])
+        # fifth, assert what the target disk is on top of now
+        statement5 = Statement(['ontop', disktomove, topofnewpegdisk])
         fact5 = Fact(statement5)
 
-        # need to assert that target disk is no longer on top of the disk below
+        # sixth, retract the fact that the target disk is on top of diskbelow
         statement6 = Statement(['ontop', disktomove, diskbelow])
         fact6 = Fact(statement6)
 
+        # need to retract the fact that top of new peg is top of new peg 
+        statement7 = ''
+        if topofnewpegdisk == 'base1': # if newpeg was empty, we need to RETRACT this fact 
+            statement7 = Statement(['empty', newpeg])
+        else: # if newpeg already has something, that something is no longer at the top 
+            statement7 = Statement(['top', topofnewpegdisk, newpeg])
+        fact7 = Fact(statement7)
+
+        # eight, retract the fact the target disk is the top of old peg
+        statement8 = Statement(['top', disktomove, oldpeg])
+        fact8 = Fact(statement8)
+
         self.kb.kb_retract(fact1)
         self.kb.kb_retract(fact6)
-        self.kb.kb_retract(fact5)
+        self.kb.kb_retract(fact7)
+        self.kb.kb_retract(fact8)
+
         self.kb.kb_assert(fact2)
         self.kb.kb_assert(fact3)
         self.kb.kb_assert(fact4)
+        self.kb.kb_assert(fact5)
 
-        print(self.kb)
+        #print(self.kb)
 
     def reverseMove(self, movable_statement):
         """
