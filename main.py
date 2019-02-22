@@ -37,7 +37,7 @@ class KBTest(unittest.TestCase):
         """
         solver.solve()
 
-    def runPlayXSteps(self, solver, plays, timeout=5):
+    def runPlayXSteps(self, solver, plays, timeout=60):
         """
         Wrapper function; calls playXSteps(..) with a timeout
 
@@ -219,24 +219,24 @@ class KBTest(unittest.TestCase):
     #         [34, ((5, 4, -1), (3, 2, 1), (6, 7, 8))], 
     #     ])
 
-    # def test08_BFS_8Puzzle(self):
-    #     p8 = Puzzle8Game()
-    #     p8.read('puzzle8_top_right_empty.txt')
-    #     required = [
-    #         'fact: (movable tile6 pos3 pos2 pos3 pos3)',
-    #         'fact: (movable tile8 pos2 pos3 pos3 pos3)',
-    #     ]
-    #     p8.setWinningCondition(required, 'puzzle8_all_forbidden.txt')
-    #     self.assertFalse(p8.isWon())
+    def test08_BFS_8Puzzle(self):
+        p8 = Puzzle8Game()
+        p8.read('puzzle8_top_right_empty.txt')
+        required = [
+            'fact: (movable tile6 pos3 pos2 pos3 pos3)',
+            'fact: (movable tile8 pos2 pos3 pos3 pos3)',
+        ]
+        p8.setWinningCondition(required, 'puzzle8_all_forbidden.txt')
+        self.assertFalse(p8.isWon())
 
-    #     solver = SolverBFS(p8,((1,2,3),(4,5,6),(7,8,-1)))
+        solver = SolverBFS(p8,((1,2,3),(4,5,6),(7,8,-1)))
 
-    #     self.runPlayXSteps(solver, [
-    #         # [step, expected game state]
-    #         [5, ((5, 4, 8), (6, -1, 1), (7, 3, 2))],
-    #         [13, ((5, 4, 8), (-1, 6, 1), (7, 3, 2))],
-    #         [21, ((6, 5, 4), (1, -1, 8), (7, 3, 2))],
-    #     ])
+        self.runPlayXSteps(solver, [
+            # [step, expected game state]
+            [5, ((5, 4, 8), (6, -1, 1), (7, 3, 2))],
+            [13, ((5, 4, 8), (-1, 6, 1), (7, 3, 2))],
+            [21, ((6, 5, 4), (1, -1, 8), (7, 3, 2))],
+        ])
 
 
 if __name__ == '__main__':

@@ -22,19 +22,18 @@ class SolverDFS(UninformedSolver):
             True if the desired solution state is reached, False otherwise
         """
         current = self.gm.getGameState()
-        print('current state:')
-        print(current)
-        print('look at the state records: ')
-        print(self.statemovesrecord)
+        # print('current state:')
+        # print(current)
+        # print('look at the state records: ')
+        # print(self.statemovesrecord)
 
         # check for victory condition
         if current == self.victoryCondition:
-            print ('solved!')
+            # print ('solved!')
             return True 
 
         # get all possible child nodes 
         moves = self.gm.getMovables()
-        print(moves)
         if moves:  # if there are child nodes 
             # if we have not visited this current node before
             if current not in self.statemovesrecord:
@@ -42,8 +41,8 @@ class SolverDFS(UninformedSolver):
                     self.statemovesrecord[current] = moves.index(move)
                     self.gm.makeMove(move) # visit leftmost child node 
                     next = self.gm.getGameState()
-                    print('trying move')
-                    print(move)
+                    # print('trying move')
+                    # print(move)
                     self.moverecords.append(move) # record move
 
                     # if this child is a state we visited before, do not expand this child. try another child
@@ -53,7 +52,6 @@ class SolverDFS(UninformedSolver):
                         continue # repeat loop to try another child
 
                     else: # if we have not visited this child before, set this child as next current node
-                        print(self.gm.getGameState())
                         return False 
 
                 # if we get to this part of the code, it means we ran out of child nodes
