@@ -83,14 +83,14 @@ class KBTest(unittest.TestCase):
     #     print(th.getGameState())
     #     movables = th.getMovables()
     #     print(movables)
-    #     th.makeMove(movables[1])        
+    #     th.makeMove(movables[0])        
         
     #     #state 2
     #     #print(th.kb)
     #     print(th.getGameState())
     #     movables = th.getMovables()
     #     print(movables)
-    #     th.makeMove(movables[-1])
+    #     th.makeMove(movables[1])
 
     #     # state 3
     #     #print(th.kb)
@@ -103,27 +103,39 @@ class KBTest(unittest.TestCase):
     #     print(th.getGameState())
     #     movables = th.getMovables()
     #     print(movables)
+    #     th.makeMove(movables[0])
+
+    #     # state 4
+    #     print(th.getGameState())
+    #     movables = th.getMovables()
+    #     print(movables)
+    #     th.makeMove(movables[1])
+
+    #     # state 4
+    #     print(th.getGameState())
+    #     movables = th.getMovables()
+    #     print(movables)
     #     th.makeMove(movables[1])
 
 
-    def test02_DFS_Hanoi(self):
-        th = TowerOfHanoiGame()
-        th.read('hanoi_3_all_disks_on_peg_one.txt')
-        required = [
-            'fact: (movable disk1 peg3 peg1)',
-            'fact: (movable disk1 peg3 peg2)',
-        ]
-        th.setWinningCondition(required, 'hanoi_all_forbidden.txt')
-        self.assertFalse(th.isWon())
+    # def test02_DFS_Hanoi(self):
+    #     th = TowerOfHanoiGame()
+    #     th.read('hanoi_3_all_disks_on_peg_one.txt')
+    #     required = [
+    #         'fact: (movable disk1 peg3 peg1)',
+    #         'fact: (movable disk1 peg3 peg2)',
+    #     ]
+    #     th.setWinningCondition(required, 'hanoi_all_forbidden.txt')
+    #     self.assertFalse(th.isWon())
 
-        solver = SolverDFS(th,((),(),(1,2,3)))
+    #     solver = SolverDFS(th,((),(),(1,2,3)))
 
-        self.runPlayXSteps(solver, [
-            # [step, expected game state]
-            [3, ((3,), (2,), (1,))],
-            [13, ((1,), (), (2, 3))],
-            [22, ((), (), (1, 2, 3))],
-        ])
+    #     self.runPlayXSteps(solver, [
+    #         # [step, expected game state]
+    #         [3, ((3,), (2,), (1,))],
+    #         [13, ((1,), (), (2, 3))],
+    #         [22, ((), (), (1, 2, 3))],
+    #     ])
 
     # def test03_DFS_Hanoi(self):
     #     th = TowerOfHanoiGame()
